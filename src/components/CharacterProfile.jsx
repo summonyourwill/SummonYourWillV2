@@ -105,6 +105,7 @@ function CharacterProfile() {
       "maestro": "#a78bfa",
       "guia": "#34d399",
       "heroe": "#f472b6",
+      "mascota": "#f59e0b",
     }
     return colores[tipo] || "#94a3b8"
   }

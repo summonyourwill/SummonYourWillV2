@@ -193,6 +193,70 @@ function AdminCharacters() {
     }
   }
 
+  const getInicial = (nombre) => nombre.charAt(0).toUpperCase()
+  
+  const getTipoColor = (tipo) => {
+    const colores = {
+      "dios": "#fbbf24",
+      "yo": "#60a5fa",
+      "maestro": "#a78bfa",
+      "guia": "#34d399",
+      "heroe": "#f472b6",
+      "mascota": "#f59e0b",
+    }
+    return colores[tipo] || "#94a3b8"
+  }
+
+  const renderizarPersonajeCard = (personaje) => {
+    const esBase = esPersonajeBase(personaje.id)
+    
+    return (
+      <div key={personaje.id} className="admin-character-card">
+        <div className="admin-character-avatar">
+          {personaje.imagen ? (
+            <img src={personaje.imagen} alt={personaje.nombre} />
+          ) : (
+            <div style={{ backgroundColor: getTipoColor(personaje.tipo) }}>
+              {getInicial(personaje.nombre)}
+            </div>
+          )}
+        </div>
+        <div className="admin-character-info">
+          <h3>{personaje.nombre}</h3>
+          <div className="admin-character-meta">
+            <span className="badge-tipo">{personaje.tipo}</span>
+            {personaje.grupo && (
+              <span className="badge-grupo">{personaje.grupo}</span>
+            )}
+            {esBase && <span className="badge-base">Base</span>}
+          </div>
+          <div className="admin-character-stats">
+            <span>{personaje.misiones?.length || 0} misiones</span>
+          </div>
+        </div>
+        <div className="admin-character-actions">
+          <Link to={`/personaje/${personaje.id}`} className="btn-ver">
+            Ver Perfil
+          </Link>
+          <button 
+            className="btn-editar" 
+            onClick={() => handleEditarPersonaje(personaje)}
+          >
+            Editar
+          </button>
+          {!esBase && (
+            <button 
+              className="btn-eliminar-admin" 
+              onClick={() => handleEliminarPersonaje(personaje.id)}
+            >
+              Eliminar
+            </button>
+          )}
+        </div>
+      </div>
+    )
+  }
+
   // Cerrar sugerencias al hacer clic fuera
   useEffect(() => {
     const handleClickOutside = (e) => {
@@ -249,6 +313,7 @@ function AdminCharacters() {
                   <option value="maestro">Maestro</option>
                   <option value="guia">Guía</option>
                   <option value="heroe">Héroe</option>
+                  <option value="mascota">Mascota</option>
                 </select>
               </div>
               {formData.tipo === 'heroe' && (
@@ -329,67 +394,85 @@ function AdminCharacters() {
         </div>
       )}
 
-      <div className="admin-list">
-        {personajes.map(personaje => {
-          const esBase = esPersonajeBase(personaje.id)
-          const getInicial = (nombre) => nombre.charAt(0).toUpperCase()
-          const getTipoColor = (tipo) => {
-            const colores = {
-              "dios": "#fbbf24",
-              "yo": "#60a5fa",
-              "maestro": "#a78bfa",
-              "guia": "#34d399",
-              "heroe": "#f472b6",
-            }
-            return colores[tipo] || "#94a3b8"
-          }
+      <p className="admin-subtitle">
+        Administra tus personajes y revisa cuántas misiones tiene cada uno.
+      </p>
 
+      <div className="admin-sections">
+        {/* Dios y Yo */}
+        {(() => {
+          const diosYyo = personajes.filter(p => p.tipo === 'dios' || p.tipo === 'yo')
+          if (diosYyo.length === 0) return null
+          
           return (
-            <div key={personaje.id} className="admin-character-card">
-              <div className="admin-character-avatar">
-                {personaje.imagen ? (
-                  <img src={personaje.imagen} alt={personaje.nombre} />
-                ) : (
-                  <div style={{ backgroundColor: getTipoColor(personaje.tipo) }}>
-                    {getInicial(personaje.nombre)}
-                  </div>
-                )}
-              </div>
-              <div className="admin-character-info">
-                <h3>{personaje.nombre}</h3>
-                <div className="admin-character-meta">
-                  <span className="badge-tipo">{personaje.tipo}</span>
-                  {personaje.grupo && (
-                    <span className="badge-grupo">{personaje.grupo}</span>
-                  )}
-                  {esBase && <span className="badge-base">Base</span>}
-                </div>
-                <div className="admin-character-stats">
-                  <span>{personaje.misiones?.length || 0} misiones</span>
-                </div>
-              </div>
-              <div className="admin-character-actions">
-                <Link to={`/personaje/${personaje.id}`} className="btn-ver">
-                  Ver Perfil
-                </Link>
-                <button 
-                  className="btn-editar" 
-                  onClick={() => handleEditarPersonaje(personaje)}
-                >
-                  Editar
-                </button>
-                {!esBase && (
-                  <button 
-                    className="btn-eliminar-admin" 
-                    onClick={() => handleEliminarPersonaje(personaje.id)}
-                  >
-                    Eliminar
-                  </button>
-                )}
+            <div className="admin-section">
+              <h2 className="admin-section-title">Dios y Yo</h2>
+              <div className="admin-list">
+                {diosYyo.map(personaje => renderizarPersonajeCard(personaje))}
               </div>
             </div>
           )
-        })}
+        })()}
+
+        {/* Maestros */}
+        {(() => {
+          const maestros = personajes.filter(p => p.tipo === 'maestro')
+          if (maestros.length === 0) return null
+          
+          return (
+            <div className="admin-section">
+              <h2 className="admin-section-title">Maestros</h2>
+              <div className="admin-list">
+                {maestros.map(personaje => renderizarPersonajeCard(personaje))}
+              </div>
+            </div>
+          )
+        })()}
+
+        {/* Guías */}
+        {(() => {
+          const guias = personajes.filter(p => p.tipo === 'guia')
+          if (guias.length === 0) return null
+          
+          return (
+            <div className="admin-section">
+              <h2 className="admin-section-title">Guías</h2>
+              <div className="admin-list">
+                {guias.map(personaje => renderizarPersonajeCard(personaje))}
+              </div>
+            </div>
+          )
+        })()}
+
+        {/* Héroes */}
+        {(() => {
+          const heroes = personajes.filter(p => p.tipo === 'heroe')
+          if (heroes.length === 0) return null
+          
+          return (
+            <div className="admin-section">
+              <h2 className="admin-section-title">Héroes</h2>
+              <div className="admin-list">
+                {heroes.map(personaje => renderizarPersonajeCard(personaje))}
+              </div>
+            </div>
+          )
+        })()}
+
+        {/* Mascotas */}
+        {(() => {
+          const mascotas = personajes.filter(p => p.tipo === 'mascota')
+          if (mascotas.length === 0) return null
+          
+          return (
+            <div className="admin-section">
+              <h2 className="admin-section-title">Mascotas</h2>
+              <div className="admin-list">
+                {mascotas.map(personaje => renderizarPersonajeCard(personaje))}
+              </div>
+            </div>
+          )
+        })()}
       </div>
     </div>
   )

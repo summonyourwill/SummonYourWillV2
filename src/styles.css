@@ -973,11 +973,61 @@ body {
   font-weight: 500;
   transition: all 0.2s ease;
   white-space: nowrap;
+  cursor: pointer;
 }
 
 .btn-admin:hover {
   background: var(--bg-hover);
   border-color: var(--accent-blue);
+}
+
+/* Admin Menu */
+.admin-menu-container {
+  position: relative;
+  display: inline-block;
+}
+
+.admin-menu-dropdown {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 0.5rem);
+  width: 200px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  box-shadow: var(--shadow-lg);
+  z-index: 1000;
+  overflow: hidden;
+}
+
+.admin-menu-item {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background: transparent;
+  border: none;
+  color: var(--text-primary);
+  font-size: 0.95rem;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.admin-menu-item:hover {
+  background: var(--bg-hover);
+  color: var(--accent-blue);
+}
+
+.admin-menu-item:first-child {
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+}
+
+.admin-menu-item:last-child {
+  border-bottom-left-radius: 12px;
+  border-bottom-right-radius: 12px;
 }
 
 /* Avatar con imagen */
@@ -1030,9 +1080,42 @@ body {
   box-shadow: var(--shadow);
 }
 
-.admin-list {
+.admin-subtitle {
+  max-width: 1200px;
+  margin: 0 auto 2rem;
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  text-align: center;
+}
+
+.admin-sections {
   max-width: 1200px;
   margin: 0 auto;
+}
+
+.admin-section {
+  margin-bottom: 3rem;
+}
+
+.admin-section:last-child {
+  margin-bottom: 0;
+}
+
+.admin-section-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 1.5rem;
+  margin-top: 2rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 2px solid var(--border-color);
+}
+
+.admin-section:first-child .admin-section-title {
+  margin-top: 0;
+}
+
+.admin-list {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 1.5rem;

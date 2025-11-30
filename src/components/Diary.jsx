@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import AccordionSidebar from './AccordionSidebar'
 import MissionsSidebar from './MissionsSidebar'
+import AdminMenu from './AdminMenu'
 import { obtenerTodosLosPersonajes } from '../data/personajes'
 import { obtenerTodosLosLugares } from '../data/lugares'
 import { obtenerTodasLasHabilidades } from '../data/habilidades'
@@ -388,9 +389,7 @@ function Diary() {
               <h1>Diario de Conexión</h1>
               <p className="subtitle">Escribe tus pensamientos y menciona a tus guías usando @id</p>
             </div>
-            <Link to="/admin" className="btn-admin">
-              ⚙️ Administrar Personajes
-            </Link>
+            <AdminMenu />
           </div>
         </div>
         
