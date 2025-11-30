@@ -12,7 +12,8 @@ function MissionProfile() {
     descripcion: '',
     estado: 'pendiente',
     prioridad: 'media',
-    personajesIds: []
+    personajesIds: [],
+    permanente: false
   })
   const [personajesDisponibles, setPersonajesDisponibles] = useState([])
   const [busquedaPersonaje, setBusquedaPersonaje] = useState('')
@@ -28,7 +29,8 @@ function MissionProfile() {
         descripcion: misionEncontrada.descripcion || '',
         estado: misionEncontrada.estado || 'pendiente',
         prioridad: misionEncontrada.prioridad || 'media',
-        personajesIds: misionEncontrada.personajesIds || []
+        personajesIds: misionEncontrada.personajesIds || [],
+        permanente: misionEncontrada.permanente || false
       })
     } else if (id === 'nueva') {
       setEditando(true)
@@ -190,6 +192,21 @@ function MissionProfile() {
                 </select>
               </div>
 
+              {/* Permanente */}
+              <div className="form-field-group">
+                <label className="checkbox-label">
+                  <input
+                    type="checkbox"
+                    checked={formData.permanente}
+                    onChange={(e) => setFormData({ ...formData, permanente: e.target.checked })}
+                  />
+                  <span>Misión Permanente</span>
+                </label>
+                <p style={{ fontSize: '0.875rem', color: 'var(--text-muted)', marginTop: '0.5rem' }}>
+                  Las misiones permanentes aparecen en una sección separada y no se mueven a completadas.
+                </p>
+              </div>
+
               {/* Personajes Asignados */}
               <div className="form-field-group">
                 <label className="form-label">Personajes Asignados</label>
@@ -268,6 +285,11 @@ function MissionProfile() {
                   {mision?.prioridad && (
                     <span className={`badge-prioridad badge-prioridad-${mision?.prioridad}`}>
                       {mision?.prioridad}
+                    </span>
+                  )}
+                  {mision?.permanente && (
+                    <span className="badge-permanente">
+                      Permanente
                     </span>
                   )}
                 </div>

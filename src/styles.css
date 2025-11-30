@@ -2039,6 +2039,17 @@ body {
   border: 1px solid #ef4444;
 }
 
+.badge-permanente {
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-transform: capitalize;
+  background: rgba(167, 139, 250, 0.2);
+  color: var(--accent-purple);
+  border: 1px solid var(--accent-purple);
+}
+
 .characters-selection,
 .characters-selection-scrollable {
   display: flex;

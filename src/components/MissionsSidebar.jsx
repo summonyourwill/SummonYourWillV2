@@ -7,7 +7,8 @@ function MissionsSidebar() {
   const [openSections, setOpenSections] = useState({
     pendientes: false,
     enProgreso: false,
-    completadas: false
+    completadas: false,
+    permanentes: false
   })
 
   // Cargar misiones del localStorage
@@ -48,9 +49,10 @@ function MissionsSidebar() {
   }
 
   // Agrupar misiones por estado
-  const pendientes = misiones.filter(m => m.estado === 'pendiente')
-  const enProgreso = misiones.filter(m => m.estado === 'en-progreso')
-  const completadas = misiones.filter(m => m.estado === 'completada')
+  const pendientes = misiones.filter(m => m.estado === 'pendiente' && !m.permanente)
+  const enProgreso = misiones.filter(m => m.estado === 'en-progreso' && !m.permanente)
+  const completadas = misiones.filter(m => m.estado === 'completada' && !m.permanente)
+  const permanentes = misiones.filter(m => m.permanente === true)
 
   // Función para obtener color según tipo de personaje
   const getTipoColor = (tipo) => {
@@ -193,6 +195,31 @@ function MissionsSidebar() {
                 <p className="no-missions">No hay misiones completadas</p>
               ) : (
                 completadas.map(renderizarMision)
+              )}
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Permanentes */}
+      <div className="accordion-section">
+        <button 
+          className="accordion-header"
+          onClick={() => toggleSection('permanentes')}
+        >
+          <span className="accordion-title">Permanentes</span>
+          <span className="accordion-count">{permanentes.length}</span>
+          <span className="accordion-icon">
+            {openSections.permanentes ? '▼' : '▶'}
+          </span>
+        </button>
+        {openSections.permanentes && (
+          <div className="accordion-content">
+            <div className="missions-list">
+              {permanentes.length === 0 ? (
+                <p className="no-missions">No hay misiones permanentes</p>
+              ) : (
+                permanentes.map(renderizarMision)
               )}
             </div>
           </div>
