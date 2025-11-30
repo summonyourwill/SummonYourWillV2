@@ -16,11 +16,39 @@ function CharacterProfile() {
   const [entradas, setEntradas] = useState([])
   const [personaje, setPersonaje] = useState(null)
   const [mostrarModalMision, setMostrarModalMision] = useState(false)
+  const [misiones, setMisiones] = useState([])
   
   useEffect(() => {
     const todos = obtenerTodosLosPersonajes()
     const encontrado = todos.find(p => p.id === id)
     setPersonaje(encontrado || null)
+  }, [id])
+
+  // Cargar misiones del sistema centralizado
+  useEffect(() => {
+    const cargarMisiones = () => {
+      const misionesGuardadas = JSON.parse(localStorage.getItem('misiones') || '[]')
+      // Filtrar misiones que tienen este personaje asignado
+      const misionesDelPersonaje = misionesGuardadas.filter(mision => 
+        mision.personajesIds && mision.personajesIds.includes(id)
+      )
+      setMisiones(misionesDelPersonaje)
+    }
+    cargarMisiones()
+    
+    // Escuchar cambios en localStorage
+    const handleStorageChange = () => {
+      cargarMisiones()
+    }
+    window.addEventListener('storage', handleStorageChange)
+    
+    // También verificar periódicamente (por si el cambio fue en la misma pestaña)
+    const interval = setInterval(cargarMisiones, 500)
+    
+    return () => {
+      window.removeEventListener('storage', handleStorageChange)
+      clearInterval(interval)
+    }
   }, [id])
   
   // Cargar entradas del localStorage
@@ -94,92 +122,48 @@ function CharacterProfile() {
   }
 
   const handleAgregarMision = (nuevaMision) => {
-    if (!personaje) return
-
-    const misionesActuales = personaje.misiones || []
-    const nuevasMisiones = [...misionesActuales, nuevaMision]
-
-    // Actualizar personaje
-    const personajeActualizado = {
-      ...personaje,
-      misiones: nuevasMisiones
-    }
-
-    // Guardar según si es personalizado o base
-    if (personaje.id.startsWith('personalizado-')) {
-      const personalizados = cargarPersonajesPersonalizados()
-      const actualizados = personalizados.map(p => 
-        p.id === personaje.id ? personajeActualizado : p
-      )
-      guardarPersonajesPersonalizados(actualizados)
-    } else {
-      const modificaciones = cargarModificacionesPersonajes()
-      modificaciones[personaje.id] = {
-        imagen: personaje.imagen || null,
-        misiones: nuevasMisiones
-      }
-      guardarModificacionesPersonajes(modificaciones)
-    }
-
-    setPersonaje(personajeActualizado)
+    // La misión ya fue guardada en localStorage por AddMissionModal
+    // Solo necesitamos actualizar el estado local
+    const misiones = JSON.parse(localStorage.getItem('misiones') || '[]')
+    const misionesDelPersonaje = misiones.filter(m => 
+      m.personajesIds && m.personajesIds.includes(id)
+    )
+    setMisiones(misionesDelPersonaje)
   }
 
   const handleToggleMision = (misionId) => {
     if (!personaje) return
 
-    const misionesActualizadas = personaje.misiones.map(m => 
-      m.id === misionId ? { ...m, completada: !m.completada } : m
-    )
-
-    const personajeActualizado = {
-      ...personaje,
-      misiones: misionesActualizadas
-    }
-
-    if (personaje.id.startsWith('personalizado-')) {
-      const personalizados = cargarPersonajesPersonalizados()
-      const actualizados = personalizados.map(p => 
-        p.id === personaje.id ? personajeActualizado : p
-      )
-      guardarPersonajesPersonalizados(actualizados)
-    } else {
-      const modificaciones = cargarModificacionesPersonajes()
-      modificaciones[personaje.id] = {
-        imagen: personaje.imagen || null,
-        misiones: misionesActualizadas
+    // Actualizar en el sistema centralizado
+    const misiones = JSON.parse(localStorage.getItem('misiones') || '[]')
+    const misionesActualizadas = misiones.map(m => {
+      if (m.id === misionId) {
+        // Cambiar estado según si estaba completada o no
+        const nuevoEstado = m.estado === 'completada' ? 'pendiente' : 'completada'
+        return { ...m, estado: nuevoEstado }
       }
-      guardarModificacionesPersonajes(modificaciones)
-    }
-
-    setPersonaje(personajeActualizado)
+      return m
+    })
+    localStorage.setItem('misiones', JSON.stringify(misionesActualizadas))
+    
+    // Actualizar estado local
+    setMisiones([...misionesActualizadas.filter(m => 
+      m.personajesIds && m.personajesIds.includes(personaje.id)
+    )])
   }
 
   const handleEliminarMision = (misionId) => {
     if (!personaje || !window.confirm('¿Eliminar esta misión?')) return
 
-    const misionesActualizadas = personaje.misiones.filter(m => m.id !== misionId)
-
-    const personajeActualizado = {
-      ...personaje,
-      misiones: misionesActualizadas
-    }
-
-    if (personaje.id.startsWith('personalizado-')) {
-      const personalizados = cargarPersonajesPersonalizados()
-      const actualizados = personalizados.map(p => 
-        p.id === personaje.id ? personajeActualizado : p
-      )
-      guardarPersonajesPersonalizados(actualizados)
-    } else {
-      const modificaciones = cargarModificacionesPersonajes()
-      modificaciones[personaje.id] = {
-        imagen: personaje.imagen || null,
-        misiones: misionesActualizadas
-      }
-      guardarModificacionesPersonajes(modificaciones)
-    }
-
-    setPersonaje(personajeActualizado)
+    // Eliminar del sistema centralizado
+    const misiones = JSON.parse(localStorage.getItem('misiones') || '[]')
+    const misionesActualizadas = misiones.filter(m => m.id !== misionId)
+    localStorage.setItem('misiones', JSON.stringify(misionesActualizadas))
+    
+    // Actualizar estado local
+    setMisiones([...misionesActualizadas.filter(m => 
+      m.personajesIds && m.personajesIds.includes(personaje.id)
+    )])
   }
   
   return (
@@ -252,27 +236,34 @@ function CharacterProfile() {
                 + Agregar Misión
               </button>
             </div>
-            {(!personaje.misiones || personaje.misiones.length === 0) ? (
+            {misiones.length === 0 ? (
               <p className="no-interactions">
                 No hay misiones asignadas a {personaje.nombre} aún.
               </p>
             ) : (
               <div className="misiones-list">
-                {personaje.misiones.map(mision => {
+                {misiones.map(mision => {
                   const fecha = new Date(mision.fechaCreacion)
+                  const estaCompletada = mision.estado === 'completada'
                   return (
                     <div 
                       key={mision.id} 
-                      className={`mision-item ${mision.completada ? 'completada' : ''}`}
+                      className={`mision-item ${estaCompletada ? 'completada' : ''}`}
                     >
                       <div className="mision-header">
                         <label className="mision-checkbox">
                           <input
                             type="checkbox"
-                            checked={mision.completada}
+                            checked={estaCompletada}
                             onChange={() => handleToggleMision(mision.id)}
                           />
-                          <span className="mision-titulo">{mision.titulo}</span>
+                          <Link 
+                            to={`/mision/${mision.id}`}
+                            className="mision-titulo-link"
+                            onClick={(e) => e.stopPropagation()}
+                          >
+                            {mision.titulo}
+                          </Link>
                         </label>
                         <button
                           className="btn-eliminar-mision"

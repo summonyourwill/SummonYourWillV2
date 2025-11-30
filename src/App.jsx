@@ -3,6 +3,7 @@ import Diary from './components/Diary'
 import CharacterProfile from './components/CharacterProfile'
 import PlaceProfile from './components/PlaceProfile'
 import AbilityProfile from './components/AbilityProfile'
+import MissionProfile from './components/MissionProfile'
 import AdminCharacters from './components/AdminCharacters'
 import './styles.css'
 
@@ -15,6 +16,7 @@ function App() {
           <Route path="/personaje/:id" element={<CharacterProfile />} />
           <Route path="/lugar/:id" element={<PlaceProfile />} />
           <Route path="/habilidad/:id" element={<AbilityProfile />} />
+          <Route path="/mision/:id" element={<MissionProfile />} />
           <Route path="/admin" element={<AdminCharacters />} />
         </Routes>
       </div>

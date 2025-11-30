@@ -1,9 +1,12 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 function AddMissionModal({ personaje, onClose, onSave }) {
+  const navigate = useNavigate()
   const [titulo, setTitulo] = useState('')
   const [descripcion, setDescripcion] = useState('')
-  const [completada, setCompletada] = useState(false)
+  const [estado, setEstado] = useState('pendiente')
+  const [prioridad, setPrioridad] = useState('media')
 
   const handleGuardar = () => {
     if (!titulo.trim()) {
@@ -11,18 +14,29 @@ function AddMissionModal({ personaje, onClose, onSave }) {
       return
     }
 
+    // Crear misión en el sistema centralizado
     const nuevaMision = {
       id: Date.now().toString(),
       titulo: titulo.trim(),
       descripcion: descripcion.trim(),
-      completada: completada,
+      estado: estado,
+      prioridad: prioridad,
+      personajesIds: personaje ? [personaje.id] : [],
       fechaCreacion: new Date().toISOString()
     }
 
+    // Guardar en localStorage
+    const misiones = JSON.parse(localStorage.getItem('misiones') || '[]')
+    const misionesActualizadas = [...misiones, nuevaMision]
+    localStorage.setItem('misiones', JSON.stringify(misionesActualizadas))
+
+    // Llamar al callback para actualizar el componente padre
     onSave(nuevaMision)
+    
     setTitulo('')
     setDescripcion('')
-    setCompletada(false)
+    setEstado('pendiente')
+    setPrioridad('media')
     onClose()
   }
 
@@ -53,14 +67,26 @@ function AddMissionModal({ personaje, onClose, onSave }) {
             />
           </div>
           <div className="form-group">
-            <label className="checkbox-label">
-              <input
-                type="checkbox"
-                checked={completada}
-                onChange={(e) => setCompletada(e.target.checked)}
-              />
-              <span>Marcar como completada</span>
-            </label>
+            <label>Estado</label>
+            <select
+              value={estado}
+              onChange={(e) => setEstado(e.target.value)}
+            >
+              <option value="pendiente">Pendiente</option>
+              <option value="en-progreso">En Progreso</option>
+              <option value="completada">Completada</option>
+            </select>
+          </div>
+          <div className="form-group">
+            <label>Prioridad</label>
+            <select
+              value={prioridad}
+              onChange={(e) => setPrioridad(e.target.value)}
+            >
+              <option value="baja">Baja</option>
+              <option value="media">Media</option>
+              <option value="alta">Alta</option>
+            </select>
           </div>
           <div className="form-actions">
             <button className="btn-cancelar" onClick={onClose}>

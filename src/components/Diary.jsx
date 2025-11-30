@@ -1,8 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
-import CharacterList from './CharacterList'
-import PlacesList from './PlacesList'
-import AbilitiesList from './AbilitiesList'
+import AccordionSidebar from './AccordionSidebar'
+import MissionsSidebar from './MissionsSidebar'
 import { obtenerTodosLosPersonajes } from '../data/personajes'
 import { obtenerTodosLosLugares } from '../data/lugares'
 import { obtenerTodasLasHabilidades } from '../data/habilidades'
@@ -379,9 +378,7 @@ function Diary() {
   return (
     <div className="diary-container">
       <div className="sidebar-container">
-        <CharacterList entradas={entradas} />
-        <PlacesList entradas={entradas} />
-        <AbilitiesList entradas={entradas} />
+        <AccordionSidebar entradas={entradas} />
       </div>
       
       <main className="diary-main">
@@ -480,128 +477,167 @@ function Diary() {
           <h2>Entradas Anteriores</h2>
           {entradas.length === 0 ? (
             <p className="no-entries">No hay entradas aún. ¡Comienza a escribir!</p>
-          ) : (
-            entradas.map(entrada => {
-              const partes = renderizarTextoConMenciones(entrada.text)
+          ) : (() => {
+            // Agrupar entradas por día
+            const entradasPorDia = {}
+            entradas.forEach(entrada => {
               const fecha = new Date(entrada.date)
+              const fechaDia = fecha.toLocaleDateString('es-ES', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+              })
+              // Usar fecha local en lugar de UTC para evitar problemas de zona horaria
+              const año = fecha.getFullYear()
+              const mes = String(fecha.getMonth() + 1).padStart(2, '0')
+              const dia = String(fecha.getDate()).padStart(2, '0')
+              const fechaKey = `${año}-${mes}-${dia}` // YYYY-MM-DD usando fecha local
+              
+              if (!entradasPorDia[fechaKey]) {
+                entradasPorDia[fechaKey] = {
+                  fechaDisplay: fechaDia,
+                  entradas: []
+                }
+              }
+              entradasPorDia[fechaKey].entradas.push(entrada)
+            })
+            
+            // Ordenar días de más reciente a más antiguo
+            const diasOrdenados = Object.keys(entradasPorDia).sort().reverse()
+            
+            return diasOrdenados.map(fechaKey => {
+              const grupoDia = entradasPorDia[fechaKey]
               
               return (
-                <div key={entrada.id} className="diary-entry">
-                  <div className="entry-header">
-                    <span className="entry-date">
-                      {fecha.toLocaleDateString('es-ES', {
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric',
-                        hour: '2-digit',
-                        minute: '2-digit'
-                      })}
-                      {entrada.dateEdited && (
-                        <span className="entry-edited"> (editada)</span>
-                      )}
-                    </span>
-                    <div className="entry-actions">
-                      <button
-                        className="btn-editar-entrada"
-                        onClick={() => handleEditar(entrada)}
-                        disabled={entradaEditando && entradaEditando.id === entrada.id}
-                      >
-                        Editar
-                      </button>
-                      <button
-                        className="btn-eliminar"
-                        onClick={() => handleEliminar(entrada.id)}
-                        disabled={entradaEditando && entradaEditando.id === entrada.id}
-                      >
-                        Eliminar
-                      </button>
-                    </div>
-                  </div>
-                  <div className="entry-content">
-                    {partes.map((parte, index) => {
-                      if (parte.tipo === 'mencion') {
-                        const ruta = parte.tipoMencion === 'personaje' 
-                          ? `/personaje/${parte.id}`
-                          : parte.tipoMencion === 'lugar'
-                          ? `/lugar/${parte.id}`
-                          : `/habilidad/${parte.id}`
-                        
-                        return (
-                          <Link
-                            key={index}
-                            to={ruta}
-                            className={`mention-link mention-${parte.tipoMencion}`}
-                          >
-                            {parte.contenido}
-                          </Link>
-                        )
-                      }
-                      return <span key={index}>{parte.contenido}</span>
+                <div key={fechaKey} className="day-group">
+                  <h3 className="day-group-header">{grupoDia.fechaDisplay}</h3>
+                  <div className="day-group-entries">
+                    {grupoDia.entradas.map(entrada => {
+                      const partes = renderizarTextoConMenciones(entrada.text)
+                      const fecha = new Date(entrada.date)
+                      
+                      return (
+                        <div key={entrada.id} className="diary-entry">
+                          <div className="entry-header">
+                            <span className="entry-date">
+                              {fecha.toLocaleTimeString('es-ES', {
+                                hour: '2-digit',
+                                minute: '2-digit'
+                              })}
+                              {entrada.dateEdited && (
+                                <span className="entry-edited"> (editada)</span>
+                              )}
+                            </span>
+                            <div className="entry-actions">
+                              <button
+                                className="btn-editar-entrada"
+                                onClick={() => handleEditar(entrada)}
+                                disabled={entradaEditando && entradaEditando.id === entrada.id}
+                              >
+                                Editar
+                              </button>
+                              <button
+                                className="btn-eliminar"
+                                onClick={() => handleEliminar(entrada.id)}
+                                disabled={entradaEditando && entradaEditando.id === entrada.id}
+                              >
+                                Eliminar
+                              </button>
+                            </div>
+                          </div>
+                          <div className="entry-content">
+                            {partes.map((parte, index) => {
+                              if (parte.tipo === 'mencion') {
+                                const ruta = parte.tipoMencion === 'personaje' 
+                                  ? `/personaje/${parte.id}`
+                                  : parte.tipoMencion === 'lugar'
+                                  ? `/lugar/${parte.id}`
+                                  : `/habilidad/${parte.id}`
+                                
+                                return (
+                                  <Link
+                                    key={index}
+                                    to={ruta}
+                                    className={`mention-link mention-${parte.tipoMencion}`}
+                                  >
+                                    {parte.contenido}
+                                  </Link>
+                                )
+                              }
+                              return <span key={index}>{parte.contenido}</span>
+                            })}
+                          </div>
+                          {(entrada.mentions?.personajes?.length > 0 || 
+                            entrada.mentions?.lugares?.length > 0 || 
+                            entrada.mentions?.habilidades?.length > 0) && (
+                            <div className="entry-mentions">
+                              {entrada.mentions?.personajes?.length > 0 && (
+                                <div>
+                                  <strong>Personajes:</strong>{' '}
+                                  {entrada.mentions.personajes.map((id, idx) => {
+                                    const todosPersonajes = obtenerTodosLosPersonajes()
+                                    const personaje = todosPersonajes.find(p => p.id === id)
+                                    return (
+                                      <span key={id}>
+                                        <Link to={`/personaje/${id}`} className="mention-tag mention-personaje">
+                                          {personaje?.nombre || id}
+                                        </Link>
+                                        {idx < entrada.mentions.personajes.length - 1 && ', '}
+                                      </span>
+                                    )
+                                  })}
+                                </div>
+                              )}
+                              {entrada.mentions?.lugares?.length > 0 && (
+                                <div>
+                                  <strong>Lugares:</strong>{' '}
+                                  {entrada.mentions.lugares.map((id, idx) => {
+                                    const todosLugares = obtenerTodosLosLugares()
+                                    const lugar = todosLugares.find(l => l.id === id)
+                                    return (
+                                      <span key={id}>
+                                        <Link to={`/lugar/${id}`} className="mention-tag mention-lugar">
+                                          {lugar?.nombre || id}
+                                        </Link>
+                                        {idx < entrada.mentions.lugares.length - 1 && ', '}
+                                      </span>
+                                    )
+                                  })}
+                                </div>
+                              )}
+                              {entrada.mentions?.habilidades?.length > 0 && (
+                                <div>
+                                  <strong>Habilidades:</strong>{' '}
+                                  {entrada.mentions.habilidades.map((id, idx) => {
+                                    const todasHabilidades = obtenerTodasLasHabilidades()
+                                    const habilidad = todasHabilidades.find(h => h.id === id)
+                                    return (
+                                      <span key={id}>
+                                        <Link to={`/habilidad/${id}`} className="mention-tag mention-habilidad">
+                                          {habilidad?.nombre || id}
+                                        </Link>
+                                        {idx < entrada.mentions.habilidades.length - 1 && ', '}
+                                      </span>
+                                    )
+                                  })}
+                                </div>
+                              )}
+                            </div>
+                          )}
+                        </div>
+                      )
                     })}
                   </div>
-                  {(entrada.mentions?.personajes?.length > 0 || 
-                    entrada.mentions?.lugares?.length > 0 || 
-                    entrada.mentions?.habilidades?.length > 0) && (
-                    <div className="entry-mentions">
-                      {entrada.mentions?.personajes?.length > 0 && (
-                        <div>
-                          <strong>Personajes:</strong>{' '}
-                          {entrada.mentions.personajes.map((id, idx) => {
-                            const todosPersonajes = obtenerTodosLosPersonajes()
-                            const personaje = todosPersonajes.find(p => p.id === id)
-                            return (
-                              <span key={id}>
-                                <Link to={`/personaje/${id}`} className="mention-tag mention-personaje">
-                                  {personaje?.nombre || id}
-                                </Link>
-                                {idx < entrada.mentions.personajes.length - 1 && ', '}
-                              </span>
-                            )
-                          })}
-                        </div>
-                      )}
-                      {entrada.mentions?.lugares?.length > 0 && (
-                        <div>
-                          <strong>Lugares:</strong>{' '}
-                          {entrada.mentions.lugares.map((id, idx) => {
-                            const todosLugares = obtenerTodosLosLugares()
-                            const lugar = todosLugares.find(l => l.id === id)
-                            return (
-                              <span key={id}>
-                                <Link to={`/lugar/${id}`} className="mention-tag mention-lugar">
-                                  {lugar?.nombre || id}
-                                </Link>
-                                {idx < entrada.mentions.lugares.length - 1 && ', '}
-                              </span>
-                            )
-                          })}
-                        </div>
-                      )}
-                      {entrada.mentions?.habilidades?.length > 0 && (
-                        <div>
-                          <strong>Habilidades:</strong>{' '}
-                          {entrada.mentions.habilidades.map((id, idx) => {
-                            const todasHabilidades = obtenerTodasLasHabilidades()
-                            const habilidad = todasHabilidades.find(h => h.id === id)
-                            return (
-                              <span key={id}>
-                                <Link to={`/habilidad/${id}`} className="mention-tag mention-habilidad">
-                                  {habilidad?.nombre || id}
-                                </Link>
-                                {idx < entrada.mentions.habilidades.length - 1 && ', '}
-                              </span>
-                            )
-                          })}
-                        </div>
-                      )}
-                    </div>
-                  )}
                 </div>
               )
             })
-          )}
+          })()}
         </div>
       </main>
+
+      <div className="missions-container">
+        <MissionsSidebar />
+      </div>
     </div>
   )
 }
