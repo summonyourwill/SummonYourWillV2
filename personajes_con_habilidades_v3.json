@@ -1,0 +1,344 @@
+{
+  "dios": [
+    {
+      "nombre": "Dios"
+    }
+  ],
+  "yo": [
+    {
+      "nombre": "Fabián"
+    }
+  ],
+  "maestros": [
+    {
+      "nombre": "Jesús"
+    },
+    {
+      "nombre": "Buda"
+    },
+    {
+      "nombre": "Ganesha"
+    },
+    {
+      "nombre": "Krishna"
+    }
+  ],
+  "guias": [
+    {
+      "nombre": "Conciencia",
+      "atributos": {},
+      "habilidades": []
+    },
+    {
+      "nombre": "Voluntad",
+      "atributos": {},
+      "habilidades": []
+    },
+    {
+      "nombre": "Equilibrio",
+      "atributos": {},
+      "habilidades": []
+    },
+    {
+      "nombre": "Amor",
+      "atributos": {},
+      "habilidades": []
+    },
+    {
+      "nombre": "Luz",
+      "atributos": {},
+      "habilidades": []
+    },
+    {
+      "nombre": "Autocuidado",
+      "atributos": {},
+      "habilidades": []
+    },
+    {
+      "nombre": "Tecnología",
+      "atributos": {},
+      "habilidades": []
+    },
+    {
+      "nombre": "Hierro",
+      "atributos": {},
+      "habilidades": []
+    },
+    {
+      "nombre": "Salud",
+      "atributos": {},
+      "habilidades": []
+    },
+    {
+      "nombre": "Valiente",
+      "atributos": {},
+      "habilidades": []
+    },
+    {
+      "nombre": "Optimista",
+      "atributos": {},
+      "habilidades": []
+    },
+    {
+      "nombre": "Maestra de las Cumbres",
+      "atributos": {},
+      "habilidades": []
+    },
+    {
+      "nombre": "Gemelos",
+      "atributos": {},
+      "habilidades": []
+    },
+    {
+      "nombre": "Guardián del Mar",
+      "atributos": {},
+      "habilidades": []
+    },
+    {
+      "nombre": "Guía de la Playa Día",
+      "atributos": {},
+      "habilidades": []
+    },
+    {
+      "nombre": "Guía de la Playa Noche",
+      "atributos": {},
+      "habilidades": []
+    }
+  ],
+  "heroes": {
+    "Avatar": [
+      {
+        "nombre": "Aang",
+        "atributos": {},
+        "habilidades": []
+      },
+      {
+        "nombre": "Katara",
+        "atributos": {},
+        "habilidades": []
+      },
+      {
+        "nombre": "Sokka",
+        "atributos": {},
+        "habilidades": []
+      },
+      {
+        "nombre": "Toph",
+        "atributos": {},
+        "habilidades": []
+      },
+      {
+        "nombre": "Zuko",
+        "atributos": {},
+        "habilidades": []
+      },
+      {
+        "nombre": "Korra",
+        "atributos": {},
+        "habilidades": []
+      }
+    ],
+    "DragonBall": [
+      {
+        "nombre": "Goku",
+        "atributos": {},
+        "habilidades": []
+      },
+      {
+        "nombre": "Vegeta",
+        "atributos": {},
+        "habilidades": []
+      },
+      {
+        "nombre": "Gohan",
+        "atributos": {},
+        "habilidades": []
+      },
+      {
+        "nombre": "Trunks",
+        "atributos": {},
+        "habilidades": []
+      },
+      {
+        "nombre": "Piccolo",
+        "atributos": {},
+        "habilidades": []
+      }
+    ],
+    "Naruto": [
+      {
+        "nombre": "Naruto",
+        "atributos": {},
+        "habilidades": []
+      },
+      {
+        "nombre": "Sasuke",
+        "atributos": {},
+        "habilidades": []
+      },
+      {
+        "nombre": "Sakura",
+        "atributos": {},
+        "habilidades": []
+      },
+      {
+        "nombre": "Kakashi",
+        "atributos": {},
+        "habilidades": []
+      },
+      {
+        "nombre": "Hinata",
+        "atributos": {},
+        "habilidades": []
+      },
+      {
+        "nombre": "Gaara",
+        "atributos": {},
+        "habilidades": []
+      }
+    ],
+    "SailorMoon": [
+      {
+        "nombre": "Sailor Moon",
+        "atributos": {},
+        "habilidades": []
+      },
+      {
+        "nombre": "Sailor Mercury",
+        "atributos": {},
+        "habilidades": []
+      },
+      {
+        "nombre": "Sailor Mars",
+        "atributos": {},
+        "habilidades": []
+      },
+      {
+        "nombre": "Sailor Jupiter",
+        "atributos": {},
+        "habilidades": []
+      },
+      {
+        "nombre": "Sailor Venus",
+        "atributos": {},
+        "habilidades": []
+      },
+      {
+        "nombre": "Sailor Saturn",
+        "atributos": {},
+        "habilidades": []
+      }
+    ],
+    "Winx": [
+      {
+        "nombre": "Bloom",
+        "atributos": {},
+        "habilidades": []
+      },
+      {
+        "nombre": "Stella",
+        "atributos": {},
+        "habilidades": []
+      },
+      {
+        "nombre": "Flora",
+        "atributos": {},
+        "habilidades": []
+      },
+      {
+        "nombre": "Musa",
+        "atributos": {},
+        "habilidades": []
+      },
+      {
+        "nombre": "Tecna",
+        "atributos": {},
+        "habilidades": []
+      },
+      {
+        "nombre": "Aisha",
+        "atributos": {},
+        "habilidades": []
+      }
+    ],
+    "CaballerosZodiaco": [
+      {
+        "nombre": "Seiya",
+        "atributos": {},
+        "habilidades": []
+      },
+      {
+        "nombre": "Shiryu",
+        "atributos": {},
+        "habilidades": []
+      },
+      {
+        "nombre": "Hyoga",
+        "atributos": {},
+        "habilidades": []
+      },
+      {
+        "nombre": "Shun",
+        "atributos": {},
+        "habilidades": []
+      },
+      {
+        "nombre": "Ikki",
+        "atributos": {},
+        "habilidades": []
+      }
+    ]
+  },
+  "habilidades_base": {
+    "conexiones_planetarias": [
+      "Conexión planeta Mercurio",
+      "Conexión planeta Venus",
+      "Conexión planeta Tierra",
+      "Conexión planeta Marte",
+      "Conexión planeta Júpiter",
+      "Conexión planeta Saturno",
+      "Conexión planeta Urano",
+      "Conexión planeta Neptuno",
+      "Conexión planeta Pluto"
+    ],
+    "dragon_ball": [
+      "Super Saiyan",
+      "Super Saiyan 2",
+      "Super Saiyan 3",
+      "Super Saiyan God",
+      "Super Saiyan Blue",
+      "Ultra Instinct - Sign",
+      "Ultra Instinct - Perfected"
+    ],
+    "naruto": [
+      "Kage Bunshin",
+      "Rasengan",
+      "Chidori",
+      "Byakugou",
+      "Modo Sabio",
+      "Susanoo",
+      "Invocación Ninja"
+    ],
+    "caballeros_zodiaco": [
+      "Pegasus Ryuseiken",
+      "Rozan Sho Ryu Ha",
+      "Diamond Dust",
+      "Nebula Chain",
+      "Phoenix Genma Ken"
+    ],
+    "sailor_moon": [
+      "Moon Tiara Action",
+      "Supreme Thunder",
+      "Crescent Beam",
+      "Deep Submerge",
+      "Silence Glaive Surprise"
+    ],
+    "winx": [
+      "Enchantix",
+      "Believix",
+      "Harmonix",
+      "Bloom Dragon Flame",
+      "Flora Nature Pulse"
+    ]
+  }
+}
