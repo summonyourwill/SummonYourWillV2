@@ -15,6 +15,9 @@ function AccordionSidebar({ entradas = [] }) {
 
   // Estado para los subgrupos de héroes
   const [openHeroGroups, setOpenHeroGroups] = useState({})
+  
+  // Estado para los subgrupos de habilidades
+  const [openAbilityGroups, setOpenAbilityGroups] = useState({})
 
   const toggleSection = (section) => {
     setOpenSections(prev => ({
@@ -27,6 +30,13 @@ function AccordionSidebar({ entradas = [] }) {
     setOpenHeroGroups(prev => ({
       ...prev,
       [grupo]: !prev[grupo]
+    }))
+  }
+
+  const toggleAbilityGroup = (categoria) => {
+    setOpenAbilityGroups(prev => ({
+      ...prev,
+      [categoria]: !prev[categoria]
     }))
   }
 
@@ -71,14 +81,21 @@ function AccordionSidebar({ entradas = [] }) {
   })
 
   const gruposHeroes = Object.keys(heroesPorGrupo).sort()
+  const categoriasHabilidades = Object.keys(habilidadesPorCategoria).sort()
 
-  // Inicializar estado de grupos de héroes
+  // Inicializar estado de grupos de héroes y habilidades
   useEffect(() => {
-    const initialGroups = {}
-    Object.keys(heroesPorGrupo).forEach(grupo => {
-      initialGroups[grupo] = false
+    const initialHeroGroups = {}
+    gruposHeroes.forEach(grupo => {
+      initialHeroGroups[grupo] = false
     })
-    setOpenHeroGroups(initialGroups)
+    setOpenHeroGroups(initialHeroGroups)
+    
+    const initialAbilityGroups = {}
+    categoriasHabilidades.forEach(categoria => {
+      initialAbilityGroups[categoria] = false
+    })
+    setOpenAbilityGroups(initialAbilityGroups)
   }, []) // Solo se ejecuta una vez al montar
 
   // Funciones auxiliares
@@ -142,7 +159,7 @@ function AccordionSidebar({ entradas = [] }) {
     )
   }
 
-  // Renderizar habilidad
+  // Renderizar habilidad (usando el mismo estilo que personajes)
   const renderizarHabilidad = (habilidad, categoria) => {
     const menciones = mencionesPorHabilidad[habilidad.id] || 0
     
@@ -150,21 +167,21 @@ function AccordionSidebar({ entradas = [] }) {
       <Link
         key={habilidad.id}
         to={`/habilidad/${habilidad.id}`}
-        className="ability-item"
+        className="character-item"
       >
         {habilidad.imagen ? (
-          <div className="ability-avatar-small">
+          <div className="character-avatar-small">
             <img src={habilidad.imagen} alt={habilidad.nombre} />
           </div>
         ) : (
-          <div className="ability-avatar-small" style={{ backgroundColor: getCategoriaColor(categoria) }}>
+          <div className="character-avatar-small" style={{ backgroundColor: getCategoriaColor(categoria) }}>
             {getInicial(habilidad.nombre)}
           </div>
         )}
-        <div className="ability-info-small">
-          <div className="ability-name-small">{habilidad.nombre}</div>
+        <div className="character-info-small">
+          <div className="character-name-small">{habilidad.nombre}</div>
           {menciones > 0 && (
-            <div className="ability-mentions-small">
+            <div className="character-mentions-small">
               {menciones} {menciones === 1 ? 'mención' : 'menciones'}
             </div>
           )}
@@ -173,7 +190,7 @@ function AccordionSidebar({ entradas = [] }) {
     )
   }
 
-  // Renderizar lugar
+  // Renderizar lugar (usando el mismo estilo que personajes)
   const renderizarLugar = (lugar) => {
     const menciones = mencionesPorLugar[lugar.id] || 0
     
@@ -181,21 +198,21 @@ function AccordionSidebar({ entradas = [] }) {
       <Link
         key={lugar.id}
         to={`/lugar/${lugar.id}`}
-        className="place-item"
+        className="character-item"
       >
         {lugar.imagen ? (
-          <div className="place-avatar-small">
+          <div className="character-avatar-small">
             <img src={lugar.imagen} alt={lugar.nombre} />
           </div>
         ) : (
-          <div className="place-avatar-small" style={{ backgroundColor: '#34d399' }}>
+          <div className="character-avatar-small" style={{ backgroundColor: '#34d399' }}>
             {getInicial(lugar.nombre)}
           </div>
         )}
-        <div className="place-info-small">
-          <div className="place-name-small">{lugar.nombre}</div>
+        <div className="character-info-small">
+          <div className="character-name-small">{lugar.nombre}</div>
           {menciones > 0 && (
-            <div className="place-mentions-small">
+            <div className="character-mentions-small">
               {menciones} {menciones === 1 ? 'mención' : 'menciones'}
             </div>
           )}
@@ -311,17 +328,30 @@ function AccordionSidebar({ entradas = [] }) {
         </button>
         {openSections.habilidades && (
           <div className="accordion-content">
-            <div className="abilities-list">
-              {Object.keys(habilidadesPorCategoria).map(categoria => {
+            <div className="hero-groups-container">
+              {categoriasHabilidades.map(categoria => {
                 const habilidadesCategoria = habilidadesPorCategoria[categoria]
                 if (habilidadesCategoria.length === 0) return null
                 
                 return (
-                  <div key={categoria} className="ability-category">
-                    <h3 className="ability-category-title">
-                      {getNombreCategoria(categoria)}
-                    </h3>
-                    {habilidadesCategoria.map(habilidad => renderizarHabilidad(habilidad, categoria))}
+                  <div key={categoria} className="hero-group-accordion">
+                    <button 
+                      className="hero-group-header"
+                      onClick={() => toggleAbilityGroup(categoria)}
+                    >
+                      <span className="hero-group-title">{getNombreCategoria(categoria)}</span>
+                      <span className="hero-group-count">{habilidadesCategoria.length}</span>
+                      <span className="hero-group-icon">
+                        {openAbilityGroups[categoria] ? '▼' : '▶'}
+                      </span>
+                    </button>
+                    {openAbilityGroups[categoria] && (
+                      <div className="hero-group-content">
+                        <div className="character-list">
+                          {habilidadesCategoria.map(habilidad => renderizarHabilidad(habilidad, categoria))}
+                        </div>
+                      </div>
+                    )}
                   </div>
                 )
               })}
